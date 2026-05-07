@@ -124,14 +124,14 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row gap-6 items-center">
             <div className="w-full md:w-1/2">
-              <h2 className="text-3xl md:text-4xl font-bold text-[#00418d] mb-6">
+              <h2 className="text-3xl md:text-4xl font-bold text-[#00418d] mb-2">
                 Who We Are ?
               </h2>
-              <p className="text-[#272727] mb-6">
+              <p className="text-[#272727] mb-2">
                 We are your partner in skill assessment. Our expertise lies in
                 assessing skill levels in people and quantifying them...
               </p>
-              <p className="text-sm text-[#272727] mb-4">
+              <p className="text-sm text-[#272727] mb-1">
                 "SkillKwiz has a single purpose and that is to create
                 stakeholder value..."
               </p>
