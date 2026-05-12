@@ -6,7 +6,7 @@ export default function AboutPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative w-full bg-[#00418d] text-white relative overflow-hidden pt-24">
+      <section className="relative w-full bg-[#00418d] text-white overflow-hidden pt-24">
         <video
           className="absolute top-0 left-0 w-full h-full object-cover z-0"
           autoPlay
