@@ -53,17 +53,19 @@ export default function LoginSection() {
               <input
                 type="email"
                 placeholder="Email"
+                suppressHydrationWarning
                 className="w-full rounded-md bg-white p-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f6c648]"
               />
               <input
                 type="password"
                 placeholder="Password"
+                suppressHydrationWarning
                 className="w-full rounded-md bg-white p-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f6c648]"
               />
 
               <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
                 <label className="flex items-center text-white">
-                  <input type="checkbox" className="mr-2 h-4 w-4" />
+                  <input type="checkbox" suppressHydrationWarning className="mr-2 h-4 w-4" />
                   Remember me
                 </label>
                 <a

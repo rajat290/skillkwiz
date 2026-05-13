@@ -96,11 +96,11 @@ export default function ServicesPage() {
         />
       </div>
 
-      <div className="relative z-10 pt-24">
+      <div className="relative z-10 pt-32 pb-20 md:pt-40">
         <div className="container mx-auto px-4 max-w-5xl">
           {!isLoggedIn ? (
             // Login Form
-            <div className="bg-gradient-to-r from-[#3a4a7b]/90 to-[#9ba3b9]/90 rounded-lg p-8 backdrop-blur-sm max-w-md mx-auto">
+            <div className="bg-white/10 border border-white/20 rounded-3xl p-10 backdrop-blur-xl max-w-md mx-auto shadow-2xl">
               <LoginForm onLogin={handleLogin} onSignUp={handleSignUp} />
             </div>
           ) : (
@@ -110,7 +110,7 @@ export default function ServicesPage() {
               {userType === "employee" && employeeScreen === "assessment" && (
                 <button
                   onClick={() => setEmployeeScreen("registration")}
-                  className="text-white mb-4"
+                  className="text-white mb-6 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all"
                 >
                   <ChevronLeft className="w-8 h-8" />
                 </button>
@@ -118,7 +118,7 @@ export default function ServicesPage() {
 
               {/* Content Panel */}
               {userType === "employee" ? (
-                <div className="bg-gradient-to-r from-[#3a4a7b]/90 to-[#9ba3b9]/90 rounded-lg p-8 backdrop-blur-sm">
+                <div className="bg-white/10 border border-white/20 rounded-3xl p-8 backdrop-blur-xl shadow-2xl">
                   {employeeRegistrationSuccess ? (
                     <SuccessMessage
                       title="Registration Successful!"
@@ -138,7 +138,7 @@ export default function ServicesPage() {
                 <>
                   {/* Employer Screens */}
                   {employerRegistrationSuccess ? (
-                    <div className="bg-gradient-to-r from-[#3a4a7b]/90 to-[#9ba3b9]/90 rounded-lg p-8 backdrop-blur-sm">
+                    <div className="bg-white/10 border border-white/20 rounded-3xl p-8 backdrop-blur-xl shadow-2xl">
                       <SuccessMessage
                         title="Registration Successful!"
                         message="Your employer account has been created successfully. You can now access all employer features."
@@ -147,7 +147,7 @@ export default function ServicesPage() {
                       />
                     </div>
                   ) : employerScreen === "registration" ? (
-                    <div className="bg-gradient-to-r from-[#3a4a7b]/90 to-[#9ba3b9]/90 rounded-lg p-8 backdrop-blur-sm">
+                    <div className="bg-white/10 border border-white/20 rounded-3xl p-8 backdrop-blur-xl shadow-2xl">
                       <EmployerRegistration
                         onSubmit={handleEmployerRegistrationComplete}
                       />
@@ -155,34 +155,34 @@ export default function ServicesPage() {
                   ) : (
                     <>
                       {/* Employer Navigation Tabs */}
-                      <div className="bg-[#b8bdc7] rounded-lg mb-4">
+                      <div className="bg-white/5 border border-white/10 rounded-2xl p-1.5 mb-8 backdrop-blur-md">
                         <div className="grid grid-cols-3 gap-1">
                           <button
                             onClick={() => setEmployerScreen("profile")}
-                            className={`py-3 px-4 text-center text-white font-medium ${
+                            className={`py-3.5 px-4 text-center rounded-xl font-semibold transition-all duration-300 ${
                               employerScreen === "profile"
-                                ? "bg-[#2d5184] rounded-lg"
-                                : ""
+                                ? "bg-gradient-to-r from-[#4ECDC4] to-[#2d8a84] text-white shadow-lg"
+                                : "text-gray-300 hover:text-white hover:bg-white/5"
                             }`}
                           >
                             Profile
                           </button>
                           <button
                             onClick={() => setEmployerScreen("assessment")}
-                            className={`py-3 px-4 text-center text-white font-medium ${
+                            className={`py-3.5 px-4 text-center rounded-xl font-semibold transition-all duration-300 ${
                               employerScreen === "assessment"
-                                ? "bg-[#2d5184] rounded-lg"
-                                : ""
+                                ? "bg-gradient-to-r from-[#4ECDC4] to-[#2d8a84] text-white shadow-lg"
+                                : "text-gray-300 hover:text-white hover:bg-white/5"
                             }`}
                           >
                             Assessment Request
                           </button>
                           <button
                             onClick={() => setEmployerScreen("candidates")}
-                            className={`py-3 px-4 text-center text-white font-medium ${
+                            className={`py-3.5 px-4 text-center rounded-xl font-semibold transition-all duration-300 ${
                               employerScreen === "candidates"
-                                ? "bg-[#2d5184] rounded-lg"
-                                : ""
+                                ? "bg-gradient-to-r from-[#4ECDC4] to-[#2d8a84] text-white shadow-lg"
+                                : "text-gray-300 hover:text-white hover:bg-white/5"
                             }`}
                           >
                             Candidate List
@@ -191,7 +191,7 @@ export default function ServicesPage() {
                       </div>
 
                       {/* Employer Content */}
-                      <div className="bg-gradient-to-r from-[#3a4a7b]/90 to-[#9ba3b9]/90 rounded-lg p-8 backdrop-blur-sm">
+                      <div className="bg-white/10 border border-white/20 rounded-3xl p-8 backdrop-blur-xl shadow-2xl">
                         {employerScreen === "profile" && <EmployerProfile />}
                         {employerScreen === "assessment" && (
                           <EmployerAssessmentRequest />
@@ -208,6 +208,7 @@ export default function ServicesPage() {
           )}
         </div>
       </div>
+
     </div>
   );
 }

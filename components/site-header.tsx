@@ -4,11 +4,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navLinkClass = (href: string) =>
     `relative group py-3 px-3 text-sm lg:text-base transition-all ${
@@ -16,16 +25,16 @@ export default function SiteHeader() {
     }`;
 
   return (
-    <div className="fixed left-0 top-0 z-50 w-full px-4 pt-4">
-      <nav className="mx-auto flex w-full max-w-6xl flex-col rounded-2xl border border-white/60 bg-white/95 text-[#00418d] shadow-lg backdrop-blur">
-        <div className="flex min-h-20 items-center justify-between px-4 py-2 md:px-6">
+    <div className={`fixed left-0 top-0 z-50 w-full transition-all duration-300 ${isScrolled ? "px-0 pt-0" : "px-4 pt-4"}`}>
+      <nav className={`mx-auto flex w-full transition-all duration-300 flex-col border border-white/60 bg-white/95 text-[#00418d] backdrop-blur ${isScrolled ? "max-w-full rounded-none shadow-md" : "max-w-6xl rounded-2xl shadow-lg"}`}>
+        <div className={`flex items-center justify-between px-4 py-2 md:px-6 transition-all duration-300 ${isScrolled ? "min-h-16" : "min-h-20"}`}>
           <Link href="/" className="relative z-30 flex items-center">
             <Image
               src="/images/skillkwiz-logo.svg"
               alt="SkillKwiz Logo"
               width={280}
               height={84}
-              className="h-[76px] w-auto object-contain"
+              className={`w-auto object-contain transition-all duration-300 ${isScrolled ? "h-[50px]" : "h-[76px]"}`}
               priority
             />
           </Link>
@@ -33,7 +42,10 @@ export default function SiteHeader() {
           <button
             className="z-30 text-[#00418d] focus:outline-none md:hidden"
             onClick={() => setIsMenuOpen((current) => !current)}
-            aria-label="Toggle menu"
+            suppressHydrationWarning
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-menu"
           >
             {isMenuOpen ? (
               <X className="h-6 w-6" />
@@ -69,7 +81,10 @@ export default function SiteHeader() {
         </div>
 
         {isMenuOpen && (
-          <div className="absolute left-0 top-0 flex w-full flex-col items-center rounded-2xl bg-white px-4 pb-5 pt-24 shadow-lg transition-all duration-300 ease-in-out md:hidden">
+          <div
+            id="mobile-menu"
+            className="absolute left-0 top-0 flex w-full flex-col items-center rounded-2xl bg-white px-4 pb-5 pt-24 shadow-lg transition-all duration-300 ease-in-out md:hidden"
+          >
             <Link
               href="/"
               className="w-full py-3 text-center text-lg text-[#00418d]"
