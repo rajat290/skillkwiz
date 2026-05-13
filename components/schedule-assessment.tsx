@@ -1,301 +1,137 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle, Info, Calendar, Clock } from "lucide-react";
+import { CheckCircle, Info, Calendar, Clock, ChevronLeft } from "lucide-react";
+import SuccessMessage from "./success-message";
+
 
 export default function ScheduleAssessment() {
   const [selectedCompany, setSelectedCompany] = useState<string>("microsoft");
   const [showThankYou, setShowThankYou] = useState(false);
 
   return (
-    <div className="text-white">
-      <h1 className="text-3xl font-semibold text-center mb-2">
-        Schedule Assessment
-      </h1>
-      <p className="text-center text-gray-200 mb-6">
-        Register for your preferred skill assessment slot
-      </p>
+    <div className="text-white space-y-8">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold tracking-tight mb-2">Schedule Assessment</h1>
+        <p className="text-gray-300">Choose your preferred slot and testing center</p>
+      </div>
 
       <div className="space-y-8">
-        {/* Message */}
-        <p className="text-center text-lg">
-          Great! Multiple employers have authorised you to take a skill
-          assessment with SkillKwiz. Choose one. You can revisit this page to
-          schedule for others
+        <p className="text-center text-lg bg-white/5 p-4 rounded-2xl border border-white/10 text-gray-200">
+          Great! Multiple employers have authorized you to take a skill
+          assessment. Choose one to proceed.
         </p>
 
         {/* Company Selection */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button
-            className={`flex items-center justify-center gap-2 bg-[#333333] rounded px-4 py-3 text-white hover:bg-[#444444] ${
-              selectedCompany === "microsoft" ? "border-2 border-green-500" : ""
-            }`}
-            onClick={() => setSelectedCompany("microsoft")}
-          >
-            <span
-              className={`w-4 h-4 rounded-full ${
-                selectedCompany === "microsoft" ? "bg-green-500" : "bg-gray-500"
+          {["microsoft", "google", "amazon"].map((company) => (
+            <button
+              key={company}
+              className={`flex items-center justify-center gap-3 rounded-xl px-4 py-4 transition-all duration-300 ${
+                selectedCompany === company
+                  ? "bg-gradient-to-r from-[#4ECDC4] to-[#2d8a84] text-white shadow-lg scale-[1.02]"
+                  : "bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10"
               }`}
-            ></span>
-            Microsoft
-          </button>
-          <button
-            className={`flex items-center justify-center gap-2 bg-[#333333] rounded px-4 py-3 text-white hover:bg-[#444444] ${
-              selectedCompany === "google" ? "border-2 border-green-500" : ""
-            }`}
-            onClick={() => setSelectedCompany("google")}
-          >
-            <span
-              className={`w-4 h-4 rounded-full ${
-                selectedCompany === "google" ? "bg-green-500" : "bg-gray-500"
-              }`}
-            ></span>
-            Google
-          </button>
-          <button
-            className={`flex items-center justify-center gap-2 bg-[#333333] rounded px-4 py-3 text-white hover:bg-[#444444] ${
-              selectedCompany === "amazon" ? "border-2 border-green-500" : ""
-            }`}
-            onClick={() => setSelectedCompany("amazon")}
-          >
-            <span
-              className={`w-4 h-4 rounded-full ${
-                selectedCompany === "amazon" ? "bg-green-500" : "bg-gray-500"
-              }`}
-            ></span>
-            Amazon
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <button
-            className={`flex items-center justify-center gap-2 bg-[#333333] rounded px-4 py-3 text-white hover:bg-[#444444] ${
-              selectedCompany === "facebook1" ? "border-2 border-green-500" : ""
-            }`}
-            onClick={() => setSelectedCompany("facebook1")}
-          >
-            <span
-              className={`w-4 h-4 rounded-full ${
-                selectedCompany === "facebook1" ? "bg-green-500" : "bg-gray-500"
-              }`}
-            ></span>
-            Facebook
-          </button>
-          <button
-            className={`flex items-center justify-center gap-2 bg-[#333333] rounded px-4 py-3 text-white hover:bg-[#444444] ${
-              selectedCompany === "facebook2" ? "border-2 border-green-500" : ""
-            }`}
-            onClick={() => setSelectedCompany("facebook2")}
-          >
-            <span
-              className={`w-4 h-4 rounded-full ${
-                selectedCompany === "facebook2" ? "bg-green-500" : "bg-gray-500"
-              }`}
-            ></span>
-            Facebook
-          </button>
+              onClick={() => setSelectedCompany(company)}
+            >
+              <div className={`w-3 h-3 rounded-full ${selectedCompany === company ? "bg-white animate-pulse" : "bg-gray-500"}`}></div>
+              <span className="font-semibold capitalize">{company}</span>
+            </button>
+          ))}
         </div>
 
         {/* Info Box */}
-        <div className="bg-[#2d5184]/80 rounded-lg p-4 flex items-start gap-3">
-          <Info className="w-6 h-6 text-white mt-1" />
-          <p>
-            Microsoft has authorized you to take an assessment for C#, SQL
-            Server, Web2.0, and React.
+        <div className="bg-[#4ECDC4]/10 border border-[#4ECDC4]/20 rounded-2xl p-5 flex items-start gap-4 backdrop-blur-sm">
+          <div className="bg-[#4ECDC4]/20 p-2 rounded-lg">
+            <Info className="w-5 h-5 text-[#4ECDC4]" />
+          </div>
+          <p className="text-gray-200 leading-relaxed">
+            <span className="font-bold text-white capitalize">{selectedCompany}</span> has authorized you to take an assessment for C#, SQL Server, Web2.0, and React.
           </p>
         </div>
 
         {/* Form Fields */}
-        <div className="space-y-4">
-          <div>
-            <label className="block mb-2">Select Country</label>
-            <div className="relative">
-              <select className="w-full bg-[#333333] rounded px-4 py-3 text-white appearance-none focus:outline-none">
-                <option>India</option>
-                <option>United States</option>
-                <option>United Kingdom</option>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-300 ml-1">Select Country</label>
+            <div className="relative group">
+              <select className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3.5 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50 transition-all cursor-pointer">
+                <option className="bg-[#1a2b4b]">India</option>
+                <option className="bg-[#1a2b4b]">United States</option>
+                <option className="bg-[#1a2b4b]">United Kingdom</option>
               </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                <svg
-                  className="w-5 h-5 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 9l-7 7-7-7"
-                  ></path>
-                </svg>
+              <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400 group-hover:text-white transition-colors">
+                <ChevronLeft className="w-5 h-5 -rotate-90" />
               </div>
             </div>
           </div>
 
-          <div>
-            <label className="block mb-2">Select Zip Code</label>
-            <div className="relative">
-              <select className="w-full bg-[#333333] rounded px-4 py-3 text-white appearance-none focus:outline-none">
-                <option>Enter your area's Zip code</option>
-                <option>110001</option>
-                <option>110002</option>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-300 ml-1">Zip Code</label>
+            <div className="relative group">
+              <select className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3.5 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50 transition-all cursor-pointer">
+                <option className="bg-[#1a2b4b]">Select Zip code</option>
+                <option className="bg-[#1a2b4b]">110001</option>
+                <option className="bg-[#1a2b4b]">110002</option>
               </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                <svg
-                  className="w-5 h-5 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 9l-7 7-7-7"
-                  ></path>
-                </svg>
+              <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400 group-hover:text-white transition-colors">
+                <ChevronLeft className="w-5 h-5 -rotate-90" />
               </div>
             </div>
           </div>
 
-          <div>
-            <label className="block mb-2">Select Testing Centre</label>
-            <div className="relative">
-              <select className="w-full bg-[#333333] rounded px-4 py-3 text-white appearance-none focus:outline-none">
-                <option>Enter your Centre</option>
-                <option>Centre 1</option>
-                <option>Centre 2</option>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-300 ml-1">Testing Centre</label>
+            <div className="relative group">
+              <select className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3.5 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50 transition-all cursor-pointer">
+                <option className="bg-[#1a2b4b]">Select Centre</option>
+                <option className="bg-[#1a2b4b]">Downtown Hub</option>
+                <option className="bg-[#1a2b4b]">Westside Lab</option>
               </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                <svg
-                  className="w-5 h-5 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 9l-7 7-7-7"
-                  ></path>
-                </svg>
+              <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400 group-hover:text-white transition-colors">
+                <ChevronLeft className="w-5 h-5 -rotate-90" />
               </div>
             </div>
           </div>
 
-          <div>
-            <label className="block mb-2">Select Testing Centre</label>
-            <div className="relative">
-              <select className="w-full bg-[#333333] rounded px-4 py-3 text-white appearance-none focus:outline-none">
-                <option>Enter your Centre</option>
-                <option>Centre 1</option>
-                <option>Centre 2</option>
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                <svg
-                  className="w-5 h-5 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 9l-7 7-7-7"
-                  ></path>
-                </svg>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-300 ml-1">Select Date</label>
+              <div className="flex items-center bg-white/10 border border-white/20 rounded-xl px-4 py-3.5 group focus-within:ring-2 focus-within:ring-[#4ECDC4]/50 transition-all">
+                <input type="text" placeholder="MM/DD/YY" className="bg-transparent focus:outline-none text-sm w-full" />
+                <Calendar className="w-5 h-5 text-gray-400 group-focus-within:text-[#4ECDC4]" />
               </div>
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block mb-2">Select a Date</label>
-              <div className="flex items-center bg-[#333333] rounded px-4 py-3 text-white">
-                <input
-                  type="text"
-                  placeholder="MM"
-                  className="w-12 bg-transparent focus:outline-none text-center"
-                />
-                <span className="mx-1">|</span>
-                <input
-                  type="text"
-                  placeholder="DD"
-                  className="w-12 bg-transparent focus:outline-none text-center"
-                />
-                <span className="mx-1">|</span>
-                <input
-                  type="text"
-                  placeholder="YYYY"
-                  className="w-16 bg-transparent focus:outline-none text-center"
-                />
-                <Calendar className="ml-auto w-5 h-5" />
-              </div>
-            </div>
-
-            <div>
-              <label className="block mb-2">Select Time</label>
-              <div className="flex items-center bg-[#333333] rounded px-4 py-3 text-white">
-                <input
-                  type="text"
-                  placeholder="03"
-                  className="w-12 bg-transparent focus:outline-none text-center"
-                />
-                <span className="mx-1">|</span>
-                <input
-                  type="text"
-                  placeholder="35"
-                  className="w-12 bg-transparent focus:outline-none text-center"
-                />
-                <span className="mx-1">|</span>
-                <input
-                  type="text"
-                  placeholder="AM"
-                  className="w-12 bg-transparent focus:outline-none text-center"
-                />
-                <Clock className="ml-auto w-5 h-5" />
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-300 ml-1">Select Time</label>
+              <div className="flex items-center bg-white/10 border border-white/20 rounded-xl px-4 py-3.5 group focus-within:ring-2 focus-within:ring-[#4ECDC4]/50 transition-all">
+                <input type="text" placeholder="HH:MM AM" className="bg-transparent focus:outline-none text-sm w-full" />
+                <Clock className="w-5 h-5 text-gray-400 group-focus-within:text-[#4ECDC4]" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Submit Button */}
-        <div className="flex justify-center mt-8">
+        <div className="flex justify-center pt-4">
           <button
             onClick={() => setShowThankYou(true)}
-            className="px-20 py-2 rounded bg-gradient-to-r from-[#4ECDC4] to-[#2d8a84] text-white hover:opacity-90"
+            className="px-16 py-4 rounded-full bg-gradient-to-r from-[#4ECDC4] to-[#2d8a84] text-white font-bold text-lg shadow-xl shadow-[#4ECDC4]/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
           >
-            Submit
+            Submit Schedule
           </button>
         </div>
       </div>
 
       {showThankYou && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-lg bg-white p-8 text-center text-[#272727] shadow-2xl">
-            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-              <CheckCircle className="h-10 w-10 text-green-600" />
-            </div>
-            <h2 className="mb-3 text-3xl font-semibold">Thank You!</h2>
-            <p className="mb-7 text-gray-600">
-              Your assessment schedule request has been submitted successfully.
-            </p>
-            <button
-              onClick={() => setShowThankYou(false)}
-              className="rounded-md bg-[#f73e5d] px-8 py-3 font-medium text-white hover:bg-[#df2849]"
-            >
-              Close
-            </button>
-          </div>
-        </div>
+        <SuccessMessage
+          title="Thank You!"
+          message="Your assessment schedule request has been submitted successfully. Our team will review your request and get back to you soon."
+          buttonText="Close"
+          onContinue={() => setShowThankYou(false)}
+        />
       )}
+
     </div>
   );
 }

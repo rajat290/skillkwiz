@@ -6,7 +6,7 @@ export default function WhyChooseSection() {
       {/* Main container with blue background in the middle and white sides */}
       <div className="absolute inset-0 flex">
         {/* Middle section with blue backgrounds */}
-        <div className="w-[100%] relative">
+        <div className=" flex flex-col justify-between">
           {/* Top blue background */}
           <div className="absolute top-0 left-0 right-0 h-[40%]">
             <img
@@ -54,12 +54,13 @@ export default function WhyChooseSection() {
           Experience the difference SkillKwiz can make in your organization.
         </p>
 
-        {/* Card container with increased height to match image */}
-        <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-16 relative h-[450px] md:h-[400px]">
-          {/* Skill Library Card - Tilted Left */}
+        {/* Card container – three cards side by side, no overlap */}
+        <div className="flex flex-col md:flex-row justify-center items-center gap-10 mb-16 py-8">
+
+          {/* Skill Library Card – slight left tilt */}
           <div
-            className="bg-white rounded-lg p-6 text-black max-w-xs w-full md:w-64 md:h-[350px] transform md:absolute md:left-[calc(50%-280px)] md:top-4 hover:-translate-y-2 transition-transform duration-300 shadow-lg z-10"
-            style={{ transform: "rotate(-25deg)" }}
+            className="bg-white rounded-lg p-6 text-black w-full max-w-xs md:w-64 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+            style={{ transform: "rotate(0deg)" }}
           >
             <div className="flex justify-center mb-4">
               <div className="w-16 h-16 bg-[#c3dfff] rounded-full flex items-center justify-center overflow-hidden">
@@ -80,8 +81,10 @@ export default function WhyChooseSection() {
             </p>
           </div>
 
-          {/* Secure Testing Card - Center */}
-          <div className="bg-white rounded-lg p-6 text-black max-w-xs w-full md:w-64 md:h-[350px] transform md:z-20 hover:-translate-y-2 transition-transform duration-300 shadow-lg md:absolute md:left-[calc(50%-130px)]">
+          {/* Secure Testing Card – upright, slightly taller */}
+          <div
+            className="bg-white rounded-lg p-6 text-black w-full max-w-xs md:w-64 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 md:-translate-y-6"
+          >
             <div className="flex justify-center mb-4">
               <div className="w-16 h-16 bg-[#c3dfff] rounded-full flex items-center justify-center overflow-hidden">
                 <img
@@ -102,10 +105,10 @@ export default function WhyChooseSection() {
             </p>
           </div>
 
-          {/* Flexible Pricing Card - Tilted Right */}
+          {/* Flexible Pricing Card – slight right tilt */}
           <div
-            className="bg-white rounded-lg p-6 text-black max-w-xs w-full md:w-64 md:h-[350px] transform md:absolute md:right-[calc(50%-280px)] md:top-4 hover:-translate-y-2 transition-transform duration-300 shadow-lg z-10"
-            style={{ transform: "rotate(25deg)" }}
+            className="bg-white rounded-lg p-6 text-black w-full max-w-xs md:w-64 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+            style={{ transform: "rotate(0deg)" }}
           >
             <div className="flex justify-center mb-4">
               <div className="w-16 h-16 bg-[#c3dfff] rounded-full flex items-center justify-center overflow-hidden">

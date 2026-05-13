@@ -22,21 +22,21 @@ export default function LoginForm({ onLogin, onSignUp }: LoginFormProps) {
   };
 
   return (
-    <div className="text-white">
-      <h1 className="mb-2 text-center text-3xl font-semibold">Login</h1>
-      <p className="mb-8 text-center text-gray-300">
-        Sign in to access your account
-      </p>
+    <div className="text-white space-y-8">
+      <div className="text-center">
+        <h1 className="mb-2 text-4xl font-bold tracking-tight">Welcome Back</h1>
+        <p className="text-gray-300">Sign in to your SkillKwiz account</p>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="mb-6 grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3 p-1.5 bg-white/5 rounded-2xl border border-white/10">
           <button
             type="button"
             onClick={() => setUserType("employee")}
-            className={`flex items-center justify-center rounded-md px-6 py-3 text-white ${
+            className={`flex items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-300 ${
               userType === "employee"
-                ? "bg-gradient-to-r from-blue-500 to-blue-600"
-                : "bg-gradient-to-r from-gray-500/80 to-gray-600/80"
+                ? "bg-gradient-to-r from-[#4ECDC4] to-[#2d8a84] text-white shadow-lg"
+                : "text-gray-400 hover:text-white"
             }`}
           >
             <User className="mr-2 h-4 w-4" /> Employee
@@ -44,94 +44,93 @@ export default function LoginForm({ onLogin, onSignUp }: LoginFormProps) {
           <button
             type="button"
             onClick={() => setUserType("employer")}
-            className={`flex items-center justify-center rounded-md px-6 py-3 text-white ${
+            className={`flex items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-300 ${
               userType === "employer"
-                ? "bg-gradient-to-r from-blue-500 to-blue-600"
-                : "bg-gradient-to-r from-gray-500/80 to-gray-600/80"
+                ? "bg-gradient-to-r from-[#4ECDC4] to-[#2d8a84] text-white shadow-lg"
+                : "text-gray-400 hover:text-white"
             }`}
           >
             <User className="mr-2 h-4 w-4" /> Employer
           </button>
         </div>
 
-        <div>
-          <label htmlFor="email" className="mb-2 block">
-            Email
-          </label>
-          <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <Mail className="h-5 w-5 text-gray-400" />
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <label htmlFor="email" className="text-sm font-medium text-gray-200 ml-1">
+              Email Address
+            </label>
+            <div className="relative group">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-[#4ECDC4] transition-colors">
+                <Mail className="h-5 w-5" />
+              </div>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="name@example.com"
+                className="w-full bg-white/10 border border-white/20 rounded-xl py-3.5 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50 focus:border-[#4ECDC4] transition-all backdrop-blur-md"
+                required
+              />
             </div>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              className="w-full rounded bg-[#333333] py-3 pl-10 pr-4 text-white placeholder-gray-400 focus:outline-none"
-              required
-            />
           </div>
-        </div>
 
-        <div>
-          <label htmlFor="password" className="mb-2 block">
-            Password
-          </label>
-          <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <Lock className="h-5 w-5 text-gray-400" />
+          <div className="space-y-2">
+            <div className="flex justify-between items-center px-1">
+              <label htmlFor="password" className="text-sm font-medium text-gray-200">
+                Password
+              </label>
+              <a
+                href="#"
+                className="text-xs text-[#4ECDC4] hover:text-[#3dbdb3] transition-colors font-medium"
+              >
+                Forgot Password?
+              </a>
             </div>
-            <input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              className="w-full rounded bg-[#333333] py-3 pl-10 pr-10 text-white placeholder-gray-400 focus:outline-none"
-              required
-            />
-            <button
-              type="button"
-              className="absolute inset-y-0 right-0 flex items-center pr-3"
-              onClick={() => setShowPassword(!showPassword)}
-              aria-label={showPassword ? "Hide password" : "Show password"}
-            >
-              {showPassword ? (
-                <EyeOff className="h-5 w-5 text-gray-400" />
-              ) : (
-                <Eye className="h-5 w-5 text-gray-400" />
-              )}
-            </button>
+            <div className="relative group">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-[#4ECDC4] transition-colors">
+                <Lock className="h-5 w-5" />
+              </div>
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full bg-white/10 border border-white/20 rounded-xl py-3.5 pl-12 pr-12 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50 focus:border-[#4ECDC4] transition-all backdrop-blur-md"
+                required
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-white transition-colors"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
+            </div>
           </div>
-        </div>
-
-        <div className="text-right">
-          <a
-            href="/files/dummy-resource.pdf"
-            download
-            className="text-sm text-blue-400 hover:text-blue-300"
-          >
-            Forgot Password?
-          </a>
         </div>
 
         <button
           type="submit"
-          className="w-full rounded bg-gradient-to-r from-[#4ECDC4] to-[#2d8a84] py-3 font-medium text-white hover:opacity-90"
+          className="w-full rounded-xl bg-gradient-to-r from-[#4ECDC4] to-[#2d8a84] py-4 font-bold text-white shadow-xl shadow-[#4ECDC4]/10 hover:shadow-[#4ECDC4]/20 hover:scale-[1.01] active:scale-[0.99] transition-all duration-300"
         >
-          Login
+          Sign In
         </button>
 
-        <div className="mt-4 text-center">
-          <p className="text-gray-300">
+        <div className="pt-4 text-center">
+          <p className="text-gray-400 text-sm">
             Don&apos;t have an account?{" "}
             <button
               type="button"
               onClick={() => onSignUp?.(userType)}
-              className="text-blue-400 hover:text-blue-300"
+              className="text-[#4ECDC4] hover:text-[#3dbdb3] transition-colors font-bold"
             >
-              Sign Up
+              Create Account
             </button>
           </p>
         </div>

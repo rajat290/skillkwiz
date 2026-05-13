@@ -6,13 +6,15 @@ export default function AboutPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative w-full bg-[#00418d] text-white overflow-hidden pt-24">
+      <section className="relative w-full bg-[#00418d] text-white overflow-hidden pt-24 md:pt-32">
         <video
           className="absolute top-0 left-0 w-full h-full object-cover z-0"
           autoPlay
           muted
           loop
           playsInline
+          preload="none"
+          poster="/images/homepage/banner_video_poster.png"
         >
           <source src="/images/homepage/banner_video.mp4" type="video/mp4" />
           Your browser does not support the video tag.
@@ -37,14 +39,14 @@ export default function AboutPage() {
           </div>
         </div>
         <div className="absolute right-0 top-0 h-full w-1/2 opacity-20">
-          {/* <div className="border-[#c3dfff] border-[20px] rounded-full h-[400px] w-[400px] absolute -right-32 top-1/2 -translate-y-1/2"></div> */}
           <div className="relative">
             <Image
               src="/images/homepage/home_globe.gif"
-              alt="SkillKwiz assessment platform"
+              alt="SkillKwiz assessment platform globe"
               width={600}
               height={400}
               className="w-full h-auto"
+              priority
             />
           </div>
         </div>
@@ -65,20 +67,15 @@ export default function AboutPage() {
               OUR VISION
             </h3>
             <p className="opacity-0 group-hover:opacity-100 group-hover:mt-4 transition-opacity duration-500 text-sm text-[#272727] group-hover:text-white text-center">
-              We envision a future where skill assessments empower companies to
-              grow confidently by hiring and developing talent based on data,
-              not guesswork.
+              To become the global standard for professional skill verification, enabling a more meritocratic and efficient job market worldwide.
             </p>
+
           </div>
           <div className="group bg-white overflow-hidden hover:bg-[#00418d] transition-all duration-500 p-6 rounded-lg shadow-lg flex flex-col items-center text-center h-[250px] hover:h-[350px]">
-            {/* <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-4 border-2 border-[#00418d]">
-              <div className="w-12 h-12 border-4 border-[#00418d] rounded-full relative">
-                <div className="absolute w-6 h-6 bg-[#c3dfff] rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"></div>
-              </div>
-            </div> */}
+            {/* ... */}
             <Image
               src="/images/aboutpage/mission.gif"
-              alt="Eye-if"
+              alt="Mission icon"
               width={200}
               height={200}
               className="w-auto h-auto max-h-32 object-contain mb-4"
@@ -87,22 +84,15 @@ export default function AboutPage() {
               OUR MISSION
             </h3>
             <p className="opacity-0 group-hover:opacity-100 group-hover:mt-4 transition-opacity duration-500 text-sm text-[#272727] group-hover:text-white text-center">
-              We envision a future where skill assessments empower companies to
-              grow confidently by hiring and developing talent based on data,
-              not guesswork.
+              To bridge the gap between talent and opportunity through rigorous, impartial, and data-driven skill assessments that define industry excellence.
             </p>
           </div>
 
           <div className="group bg-white overflow-hidden hover:bg-[#00418d] transition-all duration-500 p-6 rounded-lg shadow-lg flex flex-col items-center text-center h-[250px] hover:h-[350px]">
-            {/* <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-4 border-2 border-[#00418d]">
-              <div className="w-12 h-12 relative">
-                <div className="absolute w-10 h-10 border-4 border-[#00418d] rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"></div>
-                <div className="absolute w-4 h-4 bg-[#c3dfff] rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"></div>
-              </div>
-            </div> */}
+            {/* ... */}
             <Image
               src="/images/aboutpage/purpose.gif"
-              alt="Eye-if"
+              alt="Purpose icon"
               width={200}
               height={200}
               className="w-auto h-auto max-h-32 object-contain"
@@ -111,10 +101,9 @@ export default function AboutPage() {
               OUR PURPOSE
             </h3>
             <p className="opacity-0 group-hover:opacity-100 group-hover:mt-4 transition-opacity duration-500 text-sm text-[#272727] group-hover:text-white text-center">
-              We envision a future where skill assessments empower companies to
-              grow confidently by hiring and developing talent based on data,
-              not guesswork.
+              To empower individuals to showcase their true potential and help organizations build high-performing teams with absolute confidence and integrity.
             </p>
+
           </div>
         </div>
       </section>

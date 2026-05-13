@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
+import SuccessMessage from "@/components/success-message";
 
 export default function BlogPage() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -31,7 +32,7 @@ export default function BlogPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="w-full bg-white py-10">
+      <section className="w-full bg-white pt-24 md:pt-32 pb-10">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-10">
             <h2 className="text-3xl font-bold text-center mb-4">
@@ -296,24 +297,14 @@ export default function BlogPage() {
       </section>
 
       {showThankYou && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-lg bg-white p-8 text-center text-[#272727] shadow-2xl">
-            <h2 className="mb-3 text-3xl font-semibold text-[#00418d]">
-              Thank You!
-            </h2>
-            <p className="mb-7 text-gray-600">
-              Thanks for exploring SkillKwiz insights. Your action has been
-              received successfully.
-            </p>
-            <button
-              onClick={() => setShowThankYou(false)}
-              className="rounded-md bg-[#f73e5d] px-8 py-3 font-medium text-white hover:bg-[#df2849]"
-            >
-              Close
-            </button>
-          </div>
-        </div>
+        <SuccessMessage
+          title="Thank You!"
+          message="Thanks for exploring SkillKwiz insights. Your action has been received successfully."
+          buttonText="Close"
+          onContinue={() => setShowThankYou(false)}
+        />
       )}
+
     </>
   );
 }

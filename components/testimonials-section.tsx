@@ -139,6 +139,7 @@ export default function TestimonialsSection() {
           {/* Navigation buttons */}
           <button
             onClick={goToPrev}
+            suppressHydrationWarning
             className="absolute left-0 top-1/2 -translate-y-1/2 z-30 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 focus:outline-none hidden md:block"
             aria-label="Previous testimonial"
           >
@@ -147,6 +148,7 @@ export default function TestimonialsSection() {
 
           <button
             onClick={goToNext}
+            suppressHydrationWarning
             className="absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 focus:outline-none hidden md:block"
             aria-label="Next testimonial"
           >
@@ -223,6 +225,7 @@ export default function TestimonialsSection() {
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
+                suppressHydrationWarning
                 className={`w-3 h-3 rounded-full transition-colors ${
                   index === activeIndex ? "bg-[#00418d]" : "bg-gray-300"
                 }`}
