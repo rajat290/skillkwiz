@@ -117,7 +117,7 @@ export default function TestimonialsSection() {
     }
   };
 
-  const goToSlide = (index) => {
+  const goToSlide = (index: number) => {
     setActiveIndex(index);
 
     // Reset interval timer when manually navigating
