@@ -2,147 +2,282 @@
 
 import { useState } from "react";
 import { Upload } from "lucide-react";
+import { toast } from "sonner";
 
-export default function EmployerAssessmentRequest() {
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([
-    "C++",
-    "Python",
-  ]);
+interface EmployerAssessmentRequestProps {
+  currentUser?: {
+    id: string;
+    name: string;
+    email: string;
+    companyName?: string;
+  } | null;
+}
+
+export default function EmployerAssessmentRequest({
+  currentUser,
+}: EmployerAssessmentRequestProps) {
+  const [selectedSkills, setSelectedSkills] = useState<string[]>(["C++", "Python"]);
+  const [createdRequestId, setCreatedRequestId] = useState<string | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
+  const [formData, setFormData] = useState({
+    candidateFirstName: "",
+    candidateLastName: "",
+    candidateEmail: "",
+    candidatePhone: "",
+    candidateIdType: "PAN Card",
+  });
 
   const toggleSkill = (skill: string) => {
-    if (selectedSkills.includes(skill)) {
-      setSelectedSkills(selectedSkills.filter((s) => s !== skill));
-    } else {
-      setSelectedSkills([...selectedSkills, skill]);
+    setSelectedSkills((current) =>
+      current.includes(skill)
+        ? current.filter((item) => item !== skill)
+        : [...current, skill]
+    );
+  };
+
+  const createAssessmentRequest = async () => {
+    if (!currentUser?.id) {
+      toast.error("Please login as an employer first.");
+      return null;
+    }
+
+    if (
+      !formData.candidateFirstName ||
+      !formData.candidateLastName ||
+      !formData.candidateEmail
+    ) {
+      toast.error("Candidate name and email are required.");
+      return null;
+    }
+
+    setIsCreating(true);
+
+    try {
+      const response = await fetch("/api/assessment-requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          employerId: currentUser.id,
+          employerName: currentUser.name,
+          employerEmail: currentUser.email,
+          companyName: currentUser.companyName,
+          skills: selectedSkills,
+          amount: 40,
+          currency: "USD",
+        }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Unable to create assessment request.");
+      }
+
+      const requestId = data.request?._id;
+      setCreatedRequestId(requestId);
+      toast.success(data.message || "Assessment request created.");
+      return requestId;
+    } catch (error: any) {
+      toast.error(error.message || "Unable to create assessment request.");
+      return null;
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
+  const ensureRequest = async () => {
+    return createdRequestId || (await createAssessmentRequest());
+  };
+
+  const startStripeCheckout = async () => {
+    const requestId = await ensureRequest();
+    if (!requestId) return;
+
+    try {
+      const response = await fetch("/api/payments/stripe/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: 4000,
+          currency: "usd",
+          assessmentRequestId: requestId,
+        }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Unable to start Stripe checkout.");
+      }
+
+      window.location.href = data.url;
+    } catch (error: any) {
+      toast.error(error.message || "Stripe payment failed.");
+    }
+  };
+
+  const startPayPalCheckout = async () => {
+    const requestId = await ensureRequest();
+    if (!requestId) return;
+
+    try {
+      const response = await fetch("/api/payments/paypal/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ assessmentRequestId: requestId }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Unable to start PayPal checkout.");
+      }
+
+      window.location.href = data.approveUrl;
+    } catch (error: any) {
+      toast.error(error.message || "PayPal payment failed.");
     }
   };
 
   return (
-    <div className="text-white space-y-8">
+    <div className="space-y-8 text-white">
       <div className="text-center">
-        <h1 className="text-4xl font-bold tracking-tight mb-2">Assessment Request</h1>
-        <p className="text-gray-300">Request a new skill assessment for a candidate</p>
+        <h1 className="mb-2 text-4xl font-bold tracking-tight">
+          Assessment Request
+        </h1>
+        <p className="text-gray-300">
+          Request a new skill assessment for a candidate
+        </p>
       </div>
 
       <div className="space-y-6">
-        {/* Candidate Name */}
         <div className="space-y-3">
-          <label className="text-sm font-medium text-gray-300 ml-1">Candidate Name</label>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <label className="ml-1 text-sm font-medium text-gray-300">
+            Candidate Name
+          </label>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <input
               type="text"
+              value={formData.candidateFirstName}
+              onChange={(e) =>
+                setFormData({ ...formData, candidateFirstName: e.target.value })
+              }
               placeholder="First Name"
-              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50 transition-all backdrop-blur-md"
+              className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3.5 text-white placeholder-gray-500 backdrop-blur-md transition-all focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50"
             />
             <input
               type="text"
+              value={formData.candidateLastName}
+              onChange={(e) =>
+                setFormData({ ...formData, candidateLastName: e.target.value })
+              }
               placeholder="Last Name"
-              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50 transition-all backdrop-blur-md"
+              className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3.5 text-white placeholder-gray-500 backdrop-blur-md transition-all focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50"
             />
           </div>
         </div>
 
-        {/* Contact Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300 ml-1">Candidate Email</label>
-            <input
-              type="email"
-              placeholder="candidate@example.com"
-              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50 transition-all backdrop-blur-md"
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300 ml-1">Candidate Phone</label>
-            <input
-              type="tel"
-              placeholder="+1 (555) 000-0000"
-              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50 transition-all backdrop-blur-md"
-            />
-          </div>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <input
+            type="email"
+            value={formData.candidateEmail}
+            onChange={(e) =>
+              setFormData({ ...formData, candidateEmail: e.target.value })
+            }
+            placeholder="candidate@example.com"
+            className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3.5 text-white placeholder-gray-500 backdrop-blur-md transition-all focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50"
+          />
+          <input
+            type="tel"
+            value={formData.candidatePhone}
+            onChange={(e) =>
+              setFormData({ ...formData, candidatePhone: e.target.value })
+            }
+            placeholder="+91 XXXXX XXXXX"
+            className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3.5 text-white placeholder-gray-500 backdrop-blur-md transition-all focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50"
+          />
         </div>
 
-        {/* Identity & Resume */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300 ml-1">Candidate ID Type</label>
-            <div className="relative group">
-              <select className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3.5 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50 transition-all cursor-pointer">
-                <option className="bg-[#1a2b4b]">PAN Card</option>
-                <option className="bg-[#1a2b4b]">Aadhar Card</option>
-                <option className="bg-[#1a2b4b]">Passport</option>
-              </select>
-              <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400">
-                <Upload className="w-4 h-4 rotate-180" />
-              </div>
-            </div>
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300 ml-1">Upload Resume <span className="text-red-400">*</span></label>
-            <label className="w-full bg-white/10 border border-white/20 border-dashed rounded-xl px-4 py-3.5 text-gray-400 hover:bg-white/15 hover:border-[#4ECDC4]/50 transition-all flex items-center justify-center cursor-pointer group">
-              <Upload className="w-5 h-5 mr-3 group-hover:text-[#4ECDC4] transition-colors" />
-              <span className="group-hover:text-white transition-colors">Drag or click to upload</span>
-              <input type="file" className="hidden" accept=".pdf,.doc,.docx" />
-            </label>
-          </div>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <select
+            value={formData.candidateIdType}
+            onChange={(e) =>
+              setFormData({ ...formData, candidateIdType: e.target.value })
+            }
+            className="w-full cursor-pointer appearance-none rounded-xl border border-white/20 bg-white/10 px-4 py-3.5 text-white transition-all focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50"
+          >
+            <option className="bg-[#1a2b4b]">PAN Card</option>
+            <option className="bg-[#1a2b4b]">Aadhar Card</option>
+            <option className="bg-[#1a2b4b]">Passport</option>
+          </select>
+          <label className="flex w-full cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/20 bg-white/10 px-4 py-3.5 text-gray-400 transition-all hover:bg-white/15 hover:border-[#4ECDC4]/50">
+            <Upload className="mr-3 h-5 w-5" />
+            <span>Drag or click to upload resume</span>
+            <input type="file" className="hidden" accept=".pdf,.doc,.docx" />
+          </label>
         </div>
 
-        {/* Skills Selection */}
         <div className="space-y-4 pt-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-white">Skills to Assess</h3>
-            <span className="text-xs text-gray-400 uppercase tracking-widest">Select relevant categories</span>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <select className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#4ECDC4]">
-              <option className="bg-[#1a2b4b]">Job Family: IT & Software</option>
-              <option className="bg-[#1a2b4b]">Accounting</option>
-            </select>
-            <select className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#4ECDC4]">
-              <option className="bg-[#1a2b4b]">Skills: Programming</option>
-              <option className="bg-[#1a2b4b]">Management</option>
-            </select>
-          </div>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 min-h-[100px] flex flex-wrap gap-3 items-center">
+          <h3 className="text-lg font-semibold text-white">Skills to Assess</h3>
+          <div className="flex min-h-[100px] flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-6">
             {selectedSkills.map((skill) => (
               <button
+                type="button"
                 key={skill}
                 onClick={() => toggleSkill(skill)}
-                className="bg-gradient-to-r from-[#4ECDC4] to-[#2d8a84] text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg hover:scale-105 transition-all flex items-center gap-2"
+                className="flex items-center gap-2 rounded-full bg-gradient-to-r from-[#4ECDC4] to-[#2d8a84] px-4 py-2 text-sm font-bold text-white shadow-lg transition-all hover:scale-105"
               >
                 {skill}
-                <span className="text-white/60 hover:text-white">×</span>
+                <span className="text-white/70">x</span>
               </button>
             ))}
-            <button className="border border-white/20 border-dashed text-gray-400 px-4 py-2 rounded-full text-sm hover:border-white hover:text-white transition-all">
-              + Add More
-            </button>
+            {["React", "SQL", "Java"].map((skill) => (
+              <button
+                type="button"
+                key={skill}
+                onClick={() => toggleSkill(skill)}
+                className="rounded-full border border-dashed border-white/20 px-4 py-2 text-sm text-gray-400 transition-all hover:border-white hover:text-white"
+              >
+                + {skill}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Payment & Authorization */}
-        <div className="pt-6 border-t border-white/10">
-          <div className="bg-[#4ECDC4]/5 border border-[#4ECDC4]/20 rounded-2xl p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-gray-300 font-medium">Assessment Fee</span>
-              <span className="text-2xl font-bold text-white">$40.00</span>
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-[#4ECDC4] uppercase tracking-tighter ml-1">Payment Method</label>
-              <select className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none">
-                <option className="bg-[#1a2b4b]">Visa ending in 4242</option>
-                <option className="bg-[#1a2b4b]">Mastercard ending in 8899</option>
-              </select>
-            </div>
-            <p className="text-[11px] text-gray-400 leading-relaxed text-center italic">
-              "I authorize Delos Infosystems to debit the stated amount for conducting the skill assessment of the specified candidate."
+        <div className="rounded-2xl border border-[#4ECDC4]/20 bg-[#4ECDC4]/5 p-6">
+          <div className="flex items-center justify-between">
+            <span className="font-medium text-gray-300">Assessment Fee</span>
+            <span className="text-2xl font-bold text-white">$40.00</span>
+          </div>
+          {createdRequestId && (
+            <p className="mt-3 text-sm text-[#4ECDC4]">
+              Request saved. Complete payment to mark it paid.
             </p>
-          </div>
+          )}
         </div>
 
-        <button className="w-full py-4 rounded-xl bg-gradient-to-r from-[#4ECDC4] to-[#2d8a84] text-white font-bold text-lg shadow-xl shadow-[#4ECDC4]/20 hover:scale-[1.01] active:scale-[0.99] transition-all">
-          Submit Assessment Request
-        </button>
+        <div className="grid gap-4 md:grid-cols-3">
+          <button
+            type="button"
+            onClick={createAssessmentRequest}
+            disabled={isCreating || Boolean(createdRequestId)}
+            className="rounded-xl bg-white/10 py-4 text-lg font-bold text-white transition-all hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {createdRequestId ? "Request Saved" : isCreating ? "Saving..." : "Save Request"}
+          </button>
+          <button
+            type="button"
+            onClick={startStripeCheckout}
+            className="rounded-xl bg-gradient-to-r from-[#635bff] to-[#4037d6] py-4 text-lg font-bold text-white shadow-xl transition-all hover:scale-[1.01] active:scale-[0.99]"
+          >
+            Pay with Stripe
+          </button>
+          <button
+            type="button"
+            onClick={startPayPalCheckout}
+            className="rounded-xl bg-gradient-to-r from-[#ffc439] to-[#f2a900] py-4 text-lg font-bold text-[#111827] shadow-xl transition-all hover:scale-[1.01] active:scale-[0.99]"
+          >
+            Pay with PayPal
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -1,12 +1,21 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
-import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
+import { Eye, EyeOff, Loader2, Lock, Mail, User } from "lucide-react";
+import { toast } from "sonner";
 
 interface LoginFormProps {
-  onLogin: (userType: "employer" | "employee") => void;
+  onLogin: (
+    userType: "employer" | "employee",
+    user?: {
+      id: string;
+      name: string;
+      email: string;
+      role: "employer" | "employee" | "admin";
+      companyName?: string;
+    }
+  ) => void;
   onSignUp?: (userType: "employer" | "employee") => void;
 }
 
@@ -15,21 +24,46 @@ export default function LoginForm({ onLogin, onSignUp }: LoginFormProps) {
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState<"employer" | "employee">("employee");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onLogin(userType);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, role: userType }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Login failed.");
+      }
+
+      localStorage.setItem("skillkwiz_token", data.token);
+      localStorage.setItem("skillkwiz_user", JSON.stringify(data.user));
+      toast.success(data.message || "Logged in successfully.");
+      onLogin(data.user?.role === "employer" ? "employer" : userType, data.user);
+    } catch (error: any) {
+      toast.error(error.message || "Login failed.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="text-white space-y-8">
+    <div className="space-y-8 text-white">
       <div className="text-center">
-        <h1 className="mb-2 text-4xl font-bold tracking-tight">Welcome Back</h1>
+        <h1 className="mb-2 text-4xl font-bold tracking-tight">
+          Welcome Back
+        </h1>
         <p className="text-gray-300">Sign in to your SkillKwiz account</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-2 gap-3 p-1.5 bg-white/5 rounded-2xl border border-white/10">
+        <div className="grid grid-cols-2 gap-3 rounded-2xl border border-white/10 bg-white/5 p-1.5">
           <button
             type="button"
             onClick={() => setUserType("employee")}
@@ -56,11 +90,14 @@ export default function LoginForm({ onLogin, onSignUp }: LoginFormProps) {
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium text-gray-200 ml-1">
+            <label
+              htmlFor="email"
+              className="ml-1 text-sm font-medium text-gray-200"
+            >
               Email Address
             </label>
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-[#4ECDC4] transition-colors">
+            <div className="group relative">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 transition-colors group-focus-within:text-[#4ECDC4]">
                 <Mail className="h-5 w-5" />
               </div>
               <input
@@ -69,26 +106,30 @@ export default function LoginForm({ onLogin, onSignUp }: LoginFormProps) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@example.com"
-                className="w-full bg-white/10 border border-white/20 rounded-xl py-3.5 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50 focus:border-[#4ECDC4] transition-all backdrop-blur-md"
+                className="w-full rounded-xl border border-white/20 bg-white/10 py-3.5 pl-12 pr-4 text-white placeholder-gray-500 backdrop-blur-md transition-all focus:border-[#4ECDC4] focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50"
                 required
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <div className="flex justify-between items-center px-1">
-              <label htmlFor="password" className="text-sm font-medium text-gray-200">
+            <div className="flex items-center justify-between px-1">
+              <label
+                htmlFor="password"
+                className="text-sm font-medium text-gray-200"
+              >
                 Password
               </label>
               <a
-                href="#"
-                className="text-xs text-[#4ECDC4] hover:text-[#3dbdb3] transition-colors font-medium"
+                href="/files/dummy-resource.pdf"
+                download
+                className="text-xs font-medium text-[#4ECDC4] transition-colors hover:text-[#3dbdb3]"
               >
                 Forgot Password?
               </a>
             </div>
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-[#4ECDC4] transition-colors">
+            <div className="group relative">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 transition-colors group-focus-within:text-[#4ECDC4]">
                 <Lock className="h-5 w-5" />
               </div>
               <input
@@ -96,14 +137,15 @@ export default function LoginForm({ onLogin, onSignUp }: LoginFormProps) {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-white/10 border border-white/20 rounded-xl py-3.5 pl-12 pr-12 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50 focus:border-[#4ECDC4] transition-all backdrop-blur-md"
+                placeholder="Enter password"
+                className="w-full rounded-xl border border-white/20 bg-white/10 py-3.5 pl-12 pr-12 text-white placeholder-gray-500 backdrop-blur-md transition-all focus:border-[#4ECDC4] focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50"
                 required
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-white transition-colors"
+                className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 transition-colors hover:text-white"
                 onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
                   <EyeOff className="h-5 w-5" />
@@ -117,18 +159,26 @@ export default function LoginForm({ onLogin, onSignUp }: LoginFormProps) {
 
         <button
           type="submit"
-          className="w-full rounded-xl bg-gradient-to-r from-[#4ECDC4] to-[#2d8a84] py-4 font-bold text-white shadow-xl shadow-[#4ECDC4]/10 hover:shadow-[#4ECDC4]/20 hover:scale-[1.01] active:scale-[0.99] transition-all duration-300"
+          disabled={isLoading}
+          className="flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-[#4ECDC4] to-[#2d8a84] py-4 font-bold text-white shadow-xl shadow-[#4ECDC4]/10 transition-all duration-300 hover:scale-[1.01] hover:shadow-[#4ECDC4]/20 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70"
         >
-          Sign In
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              Signing In...
+            </>
+          ) : (
+            "Sign In"
+          )}
         </button>
 
         <div className="pt-4 text-center">
-          <p className="text-gray-400 text-sm">
+          <p className="text-sm text-gray-400">
             Don&apos;t have an account?{" "}
             <button
               type="button"
               onClick={() => onSignUp?.(userType)}
-              className="text-[#4ECDC4] hover:text-[#3dbdb3] transition-colors font-bold"
+              className="font-bold text-[#4ECDC4] transition-colors hover:text-[#3dbdb3]"
             >
               Create Account
             </button>
