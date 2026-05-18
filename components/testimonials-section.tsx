@@ -50,11 +50,11 @@ const testimonials = [
 
 export default function TestimonialsSection() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [visibleTestimonials, setVisibleTestimonials] = useState([]);
-  const intervalRef = useRef(null);
+  const [visibleTestimonials, setVisibleTestimonials] = useState(testimonials.slice(0, 3));
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Function to get visible testimonials based on active index
-  const updateVisibleTestimonials = (index) => {
+  const updateVisibleTestimonials = (index: number) => {
     const totalTestimonials = testimonials.length;
 
     // Calculate previous, current and next indices with wrapping
@@ -83,6 +83,7 @@ export default function TestimonialsSection() {
       }
     };
   }, []);
+
 
   // Update visible testimonials when active index changes
   useEffect(() => {
@@ -162,10 +163,9 @@ export default function TestimonialsSection() {
                 key={testimonial.id}
                 className={`
                   bg-[#00418d] rounded-lg text-white transition-all duration-500 flex flex-col justify-start
-                  ${
-                    index === 1
-                      ? "w-full md:w-[50%] h-[350px] p-6 z-20 shadow-lg"
-                      : "w-0 md:w-[25%] h-[250px] p-3 opacity-70 z-10 shadow-md"
+                  ${index === 1
+                    ? "w-full md:w-[50%] h-[350px] p-6 z-20 shadow-lg"
+                    : "w-0 md:w-[25%] h-[250px] p-3 opacity-70 z-10 shadow-md"
                   }
                 `}
               >
@@ -184,16 +184,14 @@ export default function TestimonialsSection() {
                     />
                   </div>
                   <h3
-                    className={`font-bold ${
-                      index === 1 ? "text-lg" : "text-sm"
-                    }`}
+                    className={`font-bold ${index === 1 ? "text-lg" : "text-sm"
+                      }`}
                   >
                     {testimonial.name}
                   </h3>
                   <p
-                    className={`${
-                      index === 1 ? "text-sm" : "text-xs"
-                    } text-gray-200`}
+                    className={`${index === 1 ? "text-sm" : "text-xs"
+                      } text-gray-200`}
                   >
                     {testimonial.title}
                   </p>
@@ -201,17 +199,15 @@ export default function TestimonialsSection() {
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
-                        className={`fill-[#f6c648] text-[#f6c648] ${
-                          index === 1 ? "w-4 h-4" : "w-3 h-3"
-                        }`}
+                        className={`fill-[#f6c648] text-[#f6c648] ${index === 1 ? "w-4 h-4" : "w-3 h-3"
+                          }`}
                       />
                     ))}
                   </div>
                 </div>
                 <p
-                  className={`text-center ${
-                    index === 1 ? "text-sm" : "text-xs"
-                  } ${index !== 1 ? "line-clamp-4" : ""}`}
+                  className={`text-center ${index === 1 ? "text-sm" : "text-xs"
+                    } ${index !== 1 ? "line-clamp-4" : ""}`}
                 >
                   "{testimonial.quote}"
                 </p>
@@ -226,9 +222,8 @@ export default function TestimonialsSection() {
                 key={index}
                 onClick={() => goToSlide(index)}
                 suppressHydrationWarning
-                className={`w-3 h-3 rounded-full transition-colors ${
-                  index === activeIndex ? "bg-[#00418d]" : "bg-gray-300"
-                }`}
+                className={`w-3 h-3 rounded-full transition-colors ${index === activeIndex ? "bg-[#00418d]" : "bg-gray-300"
+                  }`}
                 aria-label={`Go to testimonial ${index + 1}`}
               ></button>
             ))}
@@ -238,3 +233,4 @@ export default function TestimonialsSection() {
     </section>
   );
 }
+

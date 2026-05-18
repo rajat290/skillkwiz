@@ -57,9 +57,8 @@ export default function HeroSlider() {
       {slides.map((slide, index) => (
         <div
           key={slide.title}
-          className={`absolute inset-0 transition-opacity duration-700 ${
-            activeSlide === index ? "opacity-100" : "opacity-0"
-          }`}
+          className={`absolute inset-0 transition-opacity duration-700 ${activeSlide === index ? "opacity-100" : "opacity-0"
+            }`}
           aria-hidden={activeSlide !== index}
         >
           <Image
@@ -101,21 +100,20 @@ export default function HeroSlider() {
               key={slide.title}
               onClick={() => setActiveSlide(index)}
               suppressHydrationWarning
-              className={`h-2.5 rounded-full transition-all ${
-                activeSlide === index ? "w-9 bg-[#f6c648]" : "w-2.5 bg-white/70"
-              }`}
+              className={`h-2.5 rounded-full transition-all ${activeSlide === index ? "w-9 bg-[#f6c648]" : "w-2.5 bg-white/70"
+                }`}
               aria-label={`Show slide ${index + 1}`}
             />
           ))}
         </div>
 
         <div className="flex gap-3">
-            <button
-              onClick={goToPrevious}
-              suppressHydrationWarning
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-[#00418d] shadow transition hover:bg-white"
-              aria-label="Previous banner"
-            >
+          <button
+            onClick={goToPrevious}
+            suppressHydrationWarning
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-[#00418d] shadow transition hover:bg-white"
+            aria-label="Previous banner"
+          >
             <ChevronLeft className="h-5 w-5" />
           </button>
           <button

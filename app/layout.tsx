@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -64,6 +65,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <div className="flex min-h-screen flex-col">
+          <Toaster position="top-center" richColors />
           <SiteHeader />
           <main id="main-content" className="flex-grow">
             {children}

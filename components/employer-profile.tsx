@@ -1,7 +1,19 @@
 import { Edit, Mail, Phone, Building2, MapPin } from "lucide-react";
 import Image from "next/image";
 
-export default function EmployerProfile() {
+interface EmployerProfileProps {
+  user?: {
+    name: string;
+    email: string;
+    companyName?: string;
+  } | null;
+}
+
+export default function EmployerProfile({ user }: EmployerProfileProps) {
+  const displayName = user?.name || "Employer User";
+  const displayEmail = user?.email || "employer@skillkwiz.com";
+  const displayCompany = user?.companyName || "SkillKwiz Partner";
+
   return (
     <div className="text-white space-y-8">
       <div className="flex flex-col md:flex-row items-center md:items-start gap-10">
@@ -27,7 +39,7 @@ export default function EmployerProfile() {
           <div>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <h1 className="text-5xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-                Robert Jane
+                {displayName}
               </h1>
               <div className="flex items-center justify-center md:justify-start gap-2 bg-[#4ECDC4]/10 border border-[#4ECDC4]/20 px-4 py-1.5 rounded-full">
                 <span className="w-2 h-2 rounded-full bg-[#4ECDC4] animate-pulse"></span>
@@ -36,7 +48,7 @@ export default function EmployerProfile() {
             </div>
             <p className="text-2xl text-gray-300 mt-2 flex items-center justify-center md:justify-start gap-2">
               <Building2 className="w-6 h-6 text-[#4ECDC4]" />
-              Amazon Global
+              {displayCompany}
             </p>
           </div>
 
@@ -56,7 +68,7 @@ export default function EmployerProfile() {
               <div className="bg-white/10 p-2 rounded-lg">
                 <Mail className="w-4 h-4 text-[#4ECDC4]" />
               </div>
-              <span className="text-sm">robert.jane@amazon.com</span>
+              <span className="text-sm">{displayEmail}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors cursor-pointer">
               <div className="bg-white/10 p-2 rounded-lg">
